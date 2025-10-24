@@ -25,13 +25,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 min-h-full`}
       >
         <Providers>
-          <ThemeToggle />
-          {children}
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+            <ThemeToggle />
+            <main className="min-h-screen">
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>
