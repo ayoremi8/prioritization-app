@@ -2,14 +2,13 @@
 
 import React, { useState, useCallback } from 'react';
 import { Task, Quadrant } from '../types/task';
-import { useTheme } from 'next-themes';
 import { useTasks } from '../hooks/useTasks';
 
-const getQuadrants = (isDarkMode: boolean): Quadrant[] => [
+const getQuadrants = (): Quadrant[] => [
   {
     id: 'urgent-important',
     name: 'Important & Urgent\nDo First',
-    color: isDarkMode ? '#1f4e2d' : '#2d5a3d',
+    color: '',
     x: 0,
     y: 0,
     width: 0,
@@ -18,7 +17,7 @@ const getQuadrants = (isDarkMode: boolean): Quadrant[] => [
   {
     id: 'not-urgent-important', 
     name: 'Important & Not Urgent\nSchedule',
-    color: isDarkMode ? '#4a7c5a' : '#5a9b6b',
+    color: '',
     x: 0,
     y: 0,
     width: 0,
@@ -27,7 +26,7 @@ const getQuadrants = (isDarkMode: boolean): Quadrant[] => [
   {
     id: 'urgent-not-important',
     name: 'Not Important & Urgent\nDelegate',
-    color: isDarkMode ? '#3b5dc7' : '#4f6fe7',
+    color: '',
     x: 0,
     y: 0,
     width: 0,
@@ -36,7 +35,7 @@ const getQuadrants = (isDarkMode: boolean): Quadrant[] => [
   {
     id: 'not-urgent-not-important',
     name: 'Not Important & Not Urgent\nEliminate',
-    color: isDarkMode ? '#6b7095' : '#8a8db5',
+    color: '',
     x: 0,
     y: 0,
     width: 0,
@@ -198,12 +197,27 @@ const QuadrantComponent: React.FC<QuadrantProps> = ({
     e.dataTransfer.setData('text/plain', taskId);
   };
 
+  // Define colors using Tailwind classes that respond to theme
+  const getQuadrantStyles = (quadrantId: string) => {
+    switch (quadrantId) {
+      case 'urgent-important':
+        return 'bg-emerald-600 dark:bg-emerald-800';
+      case 'not-urgent-important':
+        return 'bg-emerald-400 dark:bg-emerald-600';
+      case 'urgent-not-important':
+        return 'bg-blue-500 dark:bg-blue-700';
+      case 'not-urgent-not-important':
+        return 'bg-slate-400 dark:bg-slate-600';
+      default:
+        return 'bg-gray-400 dark:bg-gray-600';
+    }
+  };
+
   return (
     <div 
-      className={`rounded-lg border-2 border-white p-4 min-h-[400px] transition-all duration-200 ${
+      className={`rounded-lg border-2 border-white dark:border-gray-300 p-4 min-h-[400px] transition-all duration-200 ${getQuadrantStyles(quadrant.id)} ${
         isDragOver ? 'ring-4 ring-blue-400 ring-opacity-50' : ''
       }`}
-      style={{ backgroundColor: quadrant.color }}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -235,9 +249,7 @@ const QuadrantComponent: React.FC<QuadrantProps> = ({
 };
 
 export const EisenhowerMatrix: React.FC = () => {
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
-  const quadrants = getQuadrants(isDarkMode);
+  const quadrants = getQuadrants();
   
   const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks();
   const [newTaskText, setNewTaskText] = useState('');
